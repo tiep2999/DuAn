@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <form action="<?= add_query_arg(['machine' => $_GET['machine']], menu_page_url('blife-statistical', false)); ?>"
+          method="post" style="padding-top: 50px">
+        <label>From: </label>
+        <input type="date" name="from" class="form-control" style="width: 13%; margin-right:40px; display: inline-flex;"
+               value="<?= $_POST['from'] ?? '' ?>">
+        <label>To: </label>
+        <input type="date" name="to" class="form-control" style="width: 13%; margin-right:40px; display: inline-flex;"
+               value="<?= $_POST['to'] ?? '' ?>">
+        <button type="submit" class="btn btn-primary">submit</button>
+    </form>
+    <div style="margin-top:70px">
+        <h1>Time usage</h1>
+        <table class="table table-striped">
+            <thead>
+            <th>No.</th>
+            <th>Date</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>10</th>
+            <th>11</th>
+            <th>12</th>
+            <th>13</th>
+            <th>14</th>
+            <th>15</th>
+            <th>16</th>
+            <th>17</th>
+            <th>18</th>
+            <th>19</th>
+            <th>20</th>
+            <th>22</th>
+            <th>23</th>
+            </thead>
+            <tbody>
+            <?php
+            if (!isset($machineData['time_usage']) || empty($machineData['time_usage'])) : ?>
+                <tr>
+                    <td colspan="25" style="text-align: center">No data</td>
+                </tr>
+            <?php else :
+                $index = 1;
+                foreach ($machineData['time_usage'] as $date => $data) : ?>
+                    <tr>
+                        <td><?= $index++ ?></td>
+                        <td><?= $date ?>
+                            <?php for ($i = 0;
+                            $i < 24;
+                            $i++) : ?>
+                        <td><?= (isset($data[$i])) ? $data[$i] : '' ?></td>
+                        <?php endfor; ?>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:70px">
+        <h1>Function usage</h1>
+        <table class="table table-striped" style="margin-left: 150px; width:65%">
+            <thead>
+            <th>No.</th>
+            <th>Function</th>
+            <th>Count</th>
+            <th>Last</th>
+            </thead>
+            <tbody>
+            <?php if (!isset($machineData['function_usage']) || empty($machineData['function_usage'])) : ?>
+                <tr>
+                    <td colspan="4" style="text-align: center">No data</td>
+                </tr>
+            <?php else :
+                $index = 1;
+                foreach ($machineData['function_usage'] as $function => $data) : ?>
+                    <tr>
+                        <td><?= $index++ ?></td>
+                        <td><?= $function ?>
+                        <td><?= $data['count'] ?>
+                        <td><?= $data['datetime'] ?>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:70px">
+        <h1>Template</h1>
+        <table class="table table-striped" style="margin-left: 150px; width:65%">
+            <thead>
+            <th>No.</th>
+            <th>Template</th>
+            <th>Count</th>
+            <th>Last</th>
+            </thead>
+            <tbody>
+            <?php if (!isset($machineData['template']) || empty($machineData['template'])) : ?>
+                <tr>
+                    <td colspan="4" style="text-align: center">No data</td>
+                </tr>
+            <?php else :
+                $index = 1;
+                foreach ($machineData['template'] as $template => $data) : ?>
+                    <?php
+                    [$count, $last] = explode('|', $data, 2);
+                    ?>
+                    <tr>
+                        <td><?= $index++ ?></td>
+                        <td><?= $template ?>
+                        <td><?= $count ?>
+                        <td><?= $last ?>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="margin-top:70px">
+        <h1>Talk</h1>
+        <table class="table table-striped" style="margin-left: 150px; width:65%">
+            <thead>
+            <th>Time</th>
+            <th>Scene</th>
+            <th>Button</th>
+            <th>Content</th>
+            </thead>
+            <tbody>
+            <?php if (!isset($machineData['talk']) || empty($machineData['talk'])) : ?>
+                <tr>
+                    <td colspan="4" style="text-align: center">No data</td>
+                </tr>
+            <?php else :
+                foreach ($machineData['talk'] as $template => $data) : ?>
+                    <?php
+                    [$last, $scene, $button, $content] = explode('|', $data, 4);
+                    ?>
+                    <tr>
+                        <td><?= $last ?></td>
+                        <td><?= $scene ?>
+                        <td><?= $button ?>
+                        <td><?= $content ?>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
